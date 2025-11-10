@@ -1,13 +1,16 @@
 import { createContext, useContext } from "react";
 import { AuthStore } from "./AuthStore";
+import { UIStore } from "./UIStore";
 
 interface RootStore {
     authStore: AuthStore;
+    uiStore: UIStore;
 }
 
 // 1. Khởi tạo các store
 const rootStore: RootStore = {
     authStore: new AuthStore(),
+    uiStore: new UIStore()
 };
 
 // 2. Tạo React Context
@@ -23,6 +26,7 @@ export const RootStoreProvider = ({ children }: { children: React.ReactNode }) =
 };
 
 // 4. Tạo hook để truy cập store
+// eslint-disable-next-line react-refresh/only-export-components
 export const useStores = () => {
     const context = useContext(RootStoreContext);
     if (context === null) {

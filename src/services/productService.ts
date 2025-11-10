@@ -1,0 +1,62 @@
+import apiClient from './api';
+// import { Category } from './categoryService';
+
+// Dùng cho Form (Tạo/Sửa)
+export interface ProductRequest {
+    sku: string;
+    name: string;
+    description?: string;
+    price: number;
+    categoryId: number;
+    initialStock: number;
+}
+
+// Dùng để hiển thị
+export interface Product {
+    id: number;
+    sku: string;
+    name: string;
+    description?: string;
+    price: number;
+    categoryId: number;
+    categoryName: string;
+    stockQuantity: number;
+}
+
+// Kiểu trả về từ API Spring (Pageable)
+export interface Page<T> {
+    content: T[];
+    totalPages: number;
+    totalElements: number;
+    size: number;
+    number: number; // trang hiện tại (từ 0)
+}
+
+// Lấy danh sách sản phẩm (có phân trang)
+export const getProducts = async (page = 0, size = 10, search = ''): Promise<Page<Product>> => {
+    const response = await apiClient.get('/products', {
+        params: {
+            page,
+            size,
+            search
+        }
+    });
+    return response.data;
+}
+
+// Tạo sản phẩm
+export const createProduct = async (data: ProductRequest): Promise<Product> => {
+    const response = await apiClient.post('/products', data);
+    return response.data;
+}
+
+// Sửa sản phẩm
+export const updateProduct = async (id: number, data: ProductRequest): Promise<Product> => {
+    const response = await apiClient.put(`/products/${id}`, data);
+    return response.data;
+}
+
+// Xóa sản phẩm
+export const deleteProduct = async (id: number): Promise<void> => {
+    await apiClient.delete(`/products/${id}`);
+}
