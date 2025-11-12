@@ -44,6 +44,12 @@ export const getProducts = async (page = 0, size = 10, search = ''): Promise<Pag
     return response.data;
 }
 
+export const searchProducts = async (search: string): Promise<Product[]> => {
+    // Gọi API getProducts nhưng chỉ lấy 10 kết quả
+    const response = await getProducts(0, 10, search);
+    return response.content;
+}
+
 // Tạo sản phẩm
 export const createProduct = async (data: ProductRequest): Promise<Product> => {
     const response = await apiClient.post('/products', data);

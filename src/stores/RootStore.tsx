@@ -1,16 +1,19 @@
 import { createContext, useContext } from "react";
 import { AuthStore } from "./AuthStore";
 import { UIStore } from "./UIStore";
+import {OrderCreationStore} from "./OrderCreationStore.ts";
 
 interface RootStore {
     authStore: AuthStore;
     uiStore: UIStore;
+    orderCreationStore: OrderCreationStore;
 }
 
 // 1. Khởi tạo các store
 const rootStore: RootStore = {
     authStore: new AuthStore(),
-    uiStore: new UIStore()
+    uiStore: new UIStore(),
+    orderCreationStore: new OrderCreationStore()
 };
 
 // 2. Tạo React Context

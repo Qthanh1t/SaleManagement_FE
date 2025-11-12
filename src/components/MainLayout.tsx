@@ -34,8 +34,8 @@ function getItem(
 const items: MenuItem[] = [
     getItem(<Link to="/">Dashboard</Link>, '/', <PieChartOutlined />),
     getItem(<Link to="/products">Sản phẩm</Link>, '/products', <AppstoreOutlined />),
-    getItem('Đơn hàng', '/orders', <DesktopOutlined />), // Sẽ dùng ở MS3
-    getItem('Khách hàng', '/customers', <UserOutlined />), // Sẽ dùng ở MS3
+    getItem(<Link to="/orders/new">Tạo Đơn hàng</Link>, '/orders/new', <DesktopOutlined />),
+    getItem('Khách hàng', '/customers', <UserOutlined />),
 ];
 
 
