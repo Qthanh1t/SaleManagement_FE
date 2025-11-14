@@ -8,10 +8,7 @@ import ProductListPage from './pages/ProductListPage';
 import '@ant-design/v5-patch-for-react-19';
 import CreateOrderPage from "./components/CreateOrderPage.tsx";
 import CategoryListPage from "./pages/CategoryListPage.tsx";
-
-function CustomerPage() {
-    return null;
-}
+import CustomerListPage from "./pages/CustomerListPage";
 
 function App() {
     return (
@@ -29,7 +26,7 @@ function App() {
                             <Route path="/products" element={<ProductListPage />} />
                             <Route path="/categories" element={<CategoryListPage />} />
                             <Route path="/orders/new" element={<CreateOrderPage />} />
-                            <Route path="/customers" element={<CustomerPage />} />
+                            <Route path="/customers" element={<CustomerListPage />} />
                         </Route>
                     </Route>
 
