@@ -8,7 +8,7 @@ import {
     BookOutlined,
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme, Dropdown, Space, Avatar, type MenuProps } from 'antd';
-import { Outlet, useNavigate, Link } from 'react-router-dom';
+import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
 import { useStores } from '../stores/RootStore';
 import { observer } from 'mobx-react-lite';
 
@@ -36,7 +36,10 @@ const items: MenuItem[] = [
     getItem(<Link to="/">Dashboard</Link>, '/', <PieChartOutlined />),
     getItem(<Link to="/products">Sản phẩm</Link>, '/products', <AppstoreOutlined />),
     getItem(<Link to="/categories">Danh mục</Link>, '/categories', <BookOutlined />),
-    getItem(<Link to="/orders/new">Tạo Đơn hàng</Link>, '/orders/new', <DesktopOutlined />),
+    getItem('Đơn hàng', '/orders', <DesktopOutlined />, [
+        getItem(<Link to="/orders/new">Tạo Đơn hàng</Link>, '/orders/new'),
+        getItem(<Link to="/orders/list">Danh sách</Link>, '/orders/list'), // (Tạm dùng /orders/list)
+    ]),
     getItem(<Link to="/customers">Khách hàng</Link>, '/customers', <UserOutlined />),
 ];
 
@@ -46,6 +49,7 @@ const MainLayout: React.FC = () => {
     const [collapsed, setCollapsed] = useState(false);
     const { authStore } = useStores();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -63,6 +67,24 @@ const MainLayout: React.FC = () => {
             },
         },
     ];
+
+    // Định nghĩa map từ path sang Tên Tiếng Việt
+    const pageTitleMap: { [key: string]: string } = {
+        '/': 'Dashboard',
+        '/products': 'Quản lý Sản phẩm',
+        '/categories': 'Quản lý Danh mục',
+        '/orders/new': 'Tạo Đơn hàng',
+        '/orders/list': 'Danh sách Đơn hàng',
+        '/customers': 'Quản lý Khách hàng',
+    };
+
+    let pageTitle = pageTitleMap[location.pathname];
+    if (!pageTitle) {
+        // Xử lý các route động, ví dụ /orders/123
+        if (/^\/orders\/\d+$/.test(location.pathname)) {
+            pageTitle = 'Chi tiết Đơn hàng';
+        }
+    }
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
@@ -87,8 +109,11 @@ const MainLayout: React.FC = () => {
                 </Header>
                 <Content style={{ margin: '0 16px' }}>
                     <Breadcrumb style={{ margin: '16px 0' }}>
-                        <Breadcrumb.Item>Admin</Breadcrumb.Item>
-                        <Breadcrumb.Item>Sản phẩm</Breadcrumb.Item>
+                        <Breadcrumb.Item>
+                            <Link to="/">Trang chủ</Link>
+                        </Breadcrumb.Item>
+                        {/* Chỉ hiển thị item thứ 2 nếu tìm thấy title */}
+                        {pageTitle && <Breadcrumb.Item>{pageTitle}</Breadcrumb.Item>}
                     </Breadcrumb>
                     <div
                         style={{
