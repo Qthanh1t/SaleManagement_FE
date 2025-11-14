@@ -66,7 +66,7 @@ const MainLayout: React.FC = () => {
         <Layout style={{ minHeight: '100vh' }}>
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
                 <div className="tw-h-16 tw-flex tw-items-center tw-justify-center">
-                    <h1 className="tw-text-white tw-font-bold tw-text-lg">SALES</h1>
+                    <h1 className="tw-text-white tw-font-bold tw-text-lg text-white text-2xl mx-3">SALES MANAGEMENT</h1>
                 </div>
                 <Menu theme="dark" defaultSelectedKeys={['/']} mode="inline" items={items} />
             </Sider>
