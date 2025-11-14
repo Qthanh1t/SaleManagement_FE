@@ -5,6 +5,7 @@ import {
     UserOutlined,
     LogoutOutlined,
     AppstoreOutlined,
+    BookOutlined,
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme, Dropdown, Space, Avatar, type MenuProps } from 'antd';
 import { Outlet, useNavigate, Link } from 'react-router-dom';
@@ -34,6 +35,7 @@ function getItem(
 const items: MenuItem[] = [
     getItem(<Link to="/">Dashboard</Link>, '/', <PieChartOutlined />),
     getItem(<Link to="/products">Sản phẩm</Link>, '/products', <AppstoreOutlined />),
+    getItem(<Link to="/categories">Danh mục</Link>, '/categories', <BookOutlined />),
     getItem(<Link to="/orders/new">Tạo Đơn hàng</Link>, '/orders/new', <DesktopOutlined />),
     getItem('Khách hàng', '/customers', <UserOutlined />),
 ];
