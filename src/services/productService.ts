@@ -9,6 +9,7 @@ export interface ProductRequest {
     price: number;
     categoryId: number;
     initialStock: number;
+    imageUrl?: string;
 }
 
 // Dùng để hiển thị
@@ -21,6 +22,7 @@ export interface Product {
     categoryId: number;
     categoryName: string;
     stockQuantity: number;
+    imageUrl?: string;
 }
 
 // Kiểu trả về từ API Spring (Pageable)
