@@ -7,6 +7,7 @@ import {
     AppstoreOutlined,
     BookOutlined,
     TeamOutlined,
+    ShopOutlined,
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme, Dropdown, Space, Avatar, type MenuProps } from 'antd';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
@@ -43,6 +44,10 @@ const items: MenuItem[] = [
     ]),
     getItem(<Link to="/customers">Khách hàng</Link>, '/customers', <UserOutlined />),
     getItem(<Link to="/suppliers">Nhà cung cấp</Link>, '/suppliers', <TeamOutlined />),
+    getItem('Quản lý Kho', 'warehouse', <ShopOutlined />, [
+        getItem(<Link to="/warehouse/receipts/new">Nhập kho</Link>, '/warehouse/receipts/new'),
+        getItem(<Link to="/warehouse/adjustments">Kiểm kho</Link>, '/warehouse/adjustments'),
+    ]),
 ];
 
 
