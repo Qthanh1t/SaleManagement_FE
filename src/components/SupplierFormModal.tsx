@@ -68,7 +68,7 @@ const SupplierFormModal = ({ open, onClose, onSuccess, supplier }: SupplierFormM
             onCancel={handleCancel}
             confirmLoading={loading}
         >
-            <Form form={form} layout="vertical" name="supplier_form" className='tw-mt-6'>
+            <Form form={form} layout="vertical" name="supplier_form" className='mt-6'>
                 <Form.Item
                     name="name"
                     label="Tên nhà cung cấp"

@@ -61,8 +61,8 @@ const CustomerSearch = observer(() => {
     if (orderCreationStore.selectedCustomer) {
         // Nếu đã chọn, hiển thị thông tin
         return (
-            <div className="tw-p-4 tw-border tw-rounded-lg">
-                <h4 className="tw-font-bold">Khách hàng: {orderCreationStore.selectedCustomer.fullName}</h4>
+            <div className="p-4 rounded-lg">
+                <h4 className="font-bold">Khách hàng: {orderCreationStore.selectedCustomer.fullName}</h4>
                 <p>SĐT: {orderCreationStore.selectedCustomer.phoneNumber}</p>
                 <Button danger onClick={() => orderCreationStore.setCustomer(null)}>
                     Thay đổi
@@ -73,8 +73,8 @@ const CustomerSearch = observer(() => {
 
     // Nếu chưa chọn, hiển thị ô tìm kiếm
     return (
-        <div className='tw-p-4 tw-border tw-rounded-lg'>
-            <div className='tw-flex tw-gap-2'>
+        <div className='p-4 rounded-lg'>
+            <div className='flex gap-2'>
                 <AutoComplete
                     options={options}
                     style={{ width: '100%' }}
@@ -96,7 +96,7 @@ const CustomerSearch = observer(() => {
                 onCancel={() => setIsModalOpen(false)}
                 confirmLoading={modalLoading}
             >
-                <Form form={form} layout="vertical" className='tw-mt-4'>
+                <Form form={form} layout="vertical" className='mt-4'>
                     <Form.Item name="fullName" label="Họ tên" rules={[{ required: true }]}>
                         <Input />
                     </Form.Item>

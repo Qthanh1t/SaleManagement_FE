@@ -13,7 +13,9 @@ export interface DashboardStats {
     topSellingProducts: TopProduct[];
 }
 
-export const getDashboardStats = async (): Promise<DashboardStats> => {
-    const response = await apiClient.get('/dashboard/stats');
+export const getDashboardStats = async (startDate?: string, endDate?: string): Promise<DashboardStats> => {
+    const response = await apiClient.get('/dashboard/stats', {
+        params: { startDate, endDate }
+    });
     return response.data;
 }

@@ -38,11 +38,11 @@ const OrderDetailPage = () => {
     }
 
     if (loading) {
-        return <div className="tw-text-center tw-mt-10"><Spin size="large" /></div>;
+        return <div className="text-center mt-10"><Spin size="large" /></div>;
     }
 
     if (!order) {
-        return <div className="tw-text-center tw-mt-10">Không tìm thấy đơn hàng.</div>;
+        return <div className="text-center mt-10">Không tìm thấy đơn hàng.</div>;
     }
 
     // Cột cho bảng chi tiết sản phẩm
@@ -66,7 +66,7 @@ const OrderDetailPage = () => {
 
     return (
         <div>
-            <div className="tw-flex tw-justify-between tw-mb-4">
+            <div className="flex justify-between mb-4">
                 <Link to="/orders/list">
                     <Button icon={<ArrowLeftOutlined />}>Quay lại danh sách</Button>
                 </Link>
@@ -102,7 +102,7 @@ const OrderDetailPage = () => {
                                 {order.status === 'COMPLETED' ? 'Hoàn thành' : 'Đã hủy'}
                             </Tag>
                         </p>
-                        <Title level={4} className="tw-mt-4">Tổng tiền: <Text type="danger">{order.totalAmount.toLocaleString('vi-VN')} VNĐ</Text></Title>
+                        <Title level={4} className="mt-4">Tổng tiền: <Text type="danger">{order.totalAmount.toLocaleString('vi-VN')} VNĐ</Text></Title>
                     </Card>
                 </Col>
 
@@ -116,7 +116,7 @@ const OrderDetailPage = () => {
             </Row>
 
             {/* Chi tiết sản phẩm */}
-            <Title level={4} className="tw-mt-6 tw-mb-4">Chi tiết Sản phẩm</Title>
+            <Title level={4} className="mt-6 mb-4">Chi tiết Sản phẩm</Title>
             <Table
                 columns={detailColumns}
                 dataSource={order.orderDetails}

@@ -64,7 +64,7 @@ const CategoryFormModal = ({ open, onClose, onSuccess, category }: CategoryFormM
             onCancel={handleCancel}
             confirmLoading={loading}
         >
-            <Form form={form} layout="vertical" name="category_form" className='tw-mt-6'>
+            <Form form={form} layout="vertical" name="category_form" className='mt-6'>
                 <Form.Item
                     name="name"
                     label="Tên danh mục"

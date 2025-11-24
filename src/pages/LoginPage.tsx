@@ -36,10 +36,10 @@ const LoginPage = () => {
     };
 
     return (
-        <Layout className="tw-min-h-screen tw-flex tw-items-center tw-justify-center tw-bg-gray-100">
+        <Layout className="min-h-screen flex items-center justify-center bg-gray-100">
             <Content>
-                <Card style={{ width: 400 }} className="tw-shadow-lg">
-                    <div className="tw-text-center tw-mb-6">
+                <Card style={{ width: 400 }} className="shadow-lg">
+                    <div className="text-center mb-6">
                         <Title level={2}>Hệ thống Bán hàng</Title>
                     </div>
 
@@ -84,7 +84,7 @@ const LoginPage = () => {
                             <Button
                                 type="primary"
                                 htmlType="submit"
-                                className="tw-w-full"
+                                className="w-full"
                                 loading={authStore.status === 'pending'} // Hiển thị loading
                             >
                                 Đăng nhập

@@ -43,14 +43,14 @@ const AdjustmentPage = () => {
     };
 
     return (
-        <div className='tw-max-w-2xl tw-mx-auto tw-p-4'>
+        <div className='max-w-2xl mx-auto p-4'>
             <Card title="Kiểm kê / Điều chỉnh tồn kho">
                 <Alert
                     message="Cảnh báo"
                     description="Hành động này sẽ thay đổi trực tiếp số lượng tồn kho. Hãy cẩn trọng."
                     type="warning"
                     showIcon
-                    className='tw-mb-6'
+                    className='mb-6'
                 />
 
                 <Form layout="vertical" form={form} onFinish={onFinish}>
@@ -69,10 +69,10 @@ const AdjustmentPage = () => {
                     </Form.Item>
 
                     {selectedProduct && (
-                        <Descriptions bordered className='tw-mb-6'>
+                        <Descriptions bordered className='mb-6'>
                             <Descriptions.Item label="SKU">{selectedProduct.sku}</Descriptions.Item>
                             <Descriptions.Item label="Tồn hiện tại">
-                                <b className='tw-text-blue-600 tw-text-lg'>{selectedProduct.stockQuantity}</b>
+                                <b className='text-blue-600 text-lg'>{selectedProduct.stockQuantity}</b>
                             </Descriptions.Item>
                         </Descriptions>
                     )}
@@ -82,7 +82,7 @@ const AdjustmentPage = () => {
                         label="Số lượng thực tế (Mới)"
                         rules={[{required: true, message: 'Nhập số lượng'}]}
                     >
-                        <InputNumber className='tw-w-full' min={0} />
+                        <InputNumber className='w-full' min={0} />
                     </Form.Item>
 
                     <Form.Item

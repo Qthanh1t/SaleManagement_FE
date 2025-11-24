@@ -137,7 +137,7 @@ const ProductListPage = () => {
 
     return (
         <div>
-            <div className='tw-flex tw-justify-between tw-mb-4'>
+            <div className='flex justify-between mb-4'>
                 <Title level={3}>Quản lý Sản phẩm</Title>
                 <Button
                     type="primary"
@@ -152,7 +152,7 @@ const ProductListPage = () => {
                 placeholder="Tìm kiếm theo Tên hoặc SKU..."
                 onSearch={handleSearch}
                 enterButton
-                className='tw-mb-4'
+                className='mb-4'
             />
 
             <Table

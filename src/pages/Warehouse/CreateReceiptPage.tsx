@@ -104,31 +104,31 @@ const CreateReceiptPage = () => {
     ];
 
     return (
-        <div className='tw-p-4'>
+        <div className='p-4'>
             <Title level={3}>Tạo Phiếu Nhập Kho</Title>
 
-            <div className='tw-grid tw-grid-cols-1 lg:tw-grid-cols-3 tw-gap-4'>
+            <div className='grid grid-cols-1 lg:grid-cols-9 gap-4'>
                 {/* CỘT TRÁI: INFO & FORM THÊM */}
-                <Card className='lg:tw-col-span-1' title="Thông tin nhập">
-                    <div className='tw-mb-4'>
+                <Card className='lg:col-span-4' title="Thông tin nhập">
+                    <div className='mb-4'>
                         <label>Nhà cung cấp:</label>
                         <Select
-                            className='tw-w-full'
+                            className='w-full'
                             placeholder="Chọn NCC"
                             onChange={setSelectedSupplier}
                         >
                             {suppliers.map(s => <Option key={s.id} value={s.id}>{s.name}</Option>)}
                         </Select>
                     </div>
-                    <div className='tw-mb-4'>
+                    <div className='mb-4'>
                         <label>Ghi chú:</label>
                         <Input.TextArea rows={2} value={note} onChange={e => setNote(e.target.value)} />
                     </div>
 
-                    <hr className='tw-my-4'/>
+                    <hr className='my-4'/>
 
                     <Typography.Text strong>Thêm sản phẩm:</Typography.Text>
-                    <Form form={form} layout="vertical" onFinish={handleAddItem} className='tw-mt-2'>
+                    <Form form={form} layout="vertical" onFinish={handleAddItem} className='mt-2'>
                         <Form.Item name="productId" rules={[{required: true, message: 'Chọn SP'}]}>
                             <Select
                                 showSearch
@@ -142,11 +142,9 @@ const CreateReceiptPage = () => {
                             </Select>
                         </Form.Item>
                         <Space align="baseline">
-                            <Typography.Text>Số Lượng:</Typography.Text>
                             <Form.Item name="quantity" initialValue={1} rules={[{required: true}]}>
                                 <InputNumber placeholder="SL" min={1} />
                             </Form.Item>
-                            <Typography.Text>Giá nhập:</Typography.Text>
                             <Form.Item name="entryPrice" initialValue={0} rules={[{required: true}]}>
                                 <InputNumber placeholder="Giá nhập" min={0} addonAfter="VNĐ" style={{ margin: 0, marginTop: '-4px' }}/>
                             </Form.Item>
@@ -156,10 +154,10 @@ const CreateReceiptPage = () => {
                 </Card>
 
                 {/* CỘT PHẢI: DANH SÁCH */}
-                <Card className='lg:tw-col-span-2' title="Danh sách hàng nhập">
+                <Card className='lg:col-span-5' title="Danh sách hàng nhập">
                     <Table dataSource={cart} columns={columns} rowKey="productId" pagination={false} />
 
-                    <div className='tw-mt-4 tw-text-right'>
+                    <div className='mt-4 text-right'>
                         <Title level={4}>
                             Tổng tiền: {cart.reduce((sum, item) => sum + item.total, 0).toLocaleString()} VNĐ
                         </Title>

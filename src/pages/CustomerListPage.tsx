@@ -103,7 +103,7 @@ const CustomerListPage = () => {
 
     return (
         <div>
-            <div className='tw-flex tw-justify-between tw-mb-4'>
+            <div className='flex justify-between mb-4'>
                 <Title level={3}>Quản lý Khách hàng</Title>
                 <Button
                     type="primary"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     DesktopOutlined,
     PieChartOutlined,
@@ -8,9 +8,11 @@ import {
     BookOutlined,
     TeamOutlined,
     ShopOutlined,
+    BellOutlined,
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme, Dropdown, Space, Avatar, type MenuProps } from 'antd';
+import { Breadcrumb, Layout, Menu, theme, Dropdown, Space, Avatar, type MenuProps, Badge, Popover, List } from 'antd';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
+import { getLowStockProducts, type Product } from '../services/productService';
 import { useStores } from '../stores/RootStore';
 import { observer } from 'mobx-react-lite';
 
@@ -57,6 +59,38 @@ const MainLayout: React.FC = () => {
     const { authStore } = useStores();
     const navigate = useNavigate();
     const location = useLocation();
+    const [lowStockItems, setLowStockItems] = useState<Product[]>([]);
+    const [loadingLowStock, setLoadingLowStock] = useState(false);
+
+    useEffect(() => {
+        if (authStore.isAuthenticated) {
+            setLoadingLowStock(true);
+            getLowStockProducts(5) // Ngưỡng cảnh báo là 5
+                .then(setLowStockItems)
+                .catch(() => {}) // Im lặng nếu lỗi
+                .finally(() => setLoadingLowStock(false));
+        }
+    }, [authStore.isAuthenticated, location.pathname]);
+
+    const notificationContent = (
+        <div style={{ width: 300 }}>
+            <List
+                loading={loadingLowStock}
+                dataSource={lowStockItems}
+                locale={{ emptyText: 'Không có cảnh báo nào' }}
+                renderItem={(item) => (
+                    <List.Item>
+                        <List.Item.Meta
+                            title={<span className='tw-text-red-600'>{item.name}</span>}
+                            description={`Chỉ còn: ${item.stockQuantity} (SKU: ${item.sku})`}
+                        />
+                        {/* Link nhanh tới trang nhập kho */}
+                        <Link to="/warehouse/receipts/new">Nhập ngay</Link>
+                    </List.Item>
+                )}
+            />
+        </div>
+    );
 
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -83,6 +117,9 @@ const MainLayout: React.FC = () => {
         '/orders/new': 'Tạo Đơn hàng',
         '/orders/list': 'Danh sách Đơn hàng',
         '/customers': 'Quản lý Khách hàng',
+        '/suppliers': 'Quản lý nhà cung cấp',
+        '/warehouse/receipts/new': 'Nhập kho',
+        '/warehouse/adjustments': 'Kiểm kho'
     };
 
     let pageTitle = pageTitleMap[location.pathname];
@@ -96,22 +133,38 @@ const MainLayout: React.FC = () => {
     return (
         <Layout style={{ minHeight: '100vh' }}>
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-                <div className="tw-h-16 tw-flex tw-items-center tw-justify-center">
-                    <h1 className="tw-text-white tw-font-bold tw-text-lg text-white text-2xl mx-3">SALES MANAGEMENT</h1>
+                <div className="h-16 flex items-center justify-center">
+                    <h1 className="text-white font-bold tw-text-lg text-2xl mx-3">SALES MANAGEMENT</h1>
                 </div>
                 <Menu theme="dark" defaultSelectedKeys={['/']} mode="inline" items={items} />
             </Sider>
             <Layout>
                 <Header style={{ padding: '0 16px', background: colorBgContainer }}>
-                    <div className='tw-flex tw-justify-end tw-h-full'>
+                    <div className='justify-end h-full items-center gap-5 flex'>
+
+                        {/* 🔥 ICON CHUÔNG THÔNG BÁO */}
+                        <Popover
+                            content={notificationContent}
+                            title="Cảnh báo Tồn kho thấp"
+                            trigger="click"
+                            placement="bottomRight"
+                        >
+                            <div className='cursor-pointer mr-4 pt-2'>
+                                <Badge count={lowStockItems.length} offset={[2, 0]}>
+                                    <BellOutlined style={{ fontSize: '20px' }} />
+                                </Badge>
+                            </div>
+                        </Popover>
+
                         <Dropdown menu={{ items: userMenuItems }} trigger={['click']}>
                             <a onClick={(e) => e.preventDefault()}>
-                                <Space className='tw-h-full tw-cursor-pointer'>
+                                <Space className='h-full cursor-pointer'>
                                     <Avatar size="small" icon={<UserOutlined />} />
                                     {authStore.user?.fullName}
                                 </Space>
                             </a>
                         </Dropdown>
+
                     </div>
                 </Header>
                 <Content style={{ margin: '0 16px' }}>

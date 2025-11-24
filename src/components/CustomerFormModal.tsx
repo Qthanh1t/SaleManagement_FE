@@ -69,7 +69,7 @@ const CustomerFormModal = ({ open, onClose, onSuccess, customer }: CustomerFormM
             onCancel={handleCancel}
             confirmLoading={loading}
         >
-            <Form form={form} layout="vertical" name="customer_form" className='tw-mt-6'>
+            <Form form={form} layout="vertical" name="customer_form" className='mt-6'>
                 <Form.Item
                     name="fullName"
                     label="Họ tên"

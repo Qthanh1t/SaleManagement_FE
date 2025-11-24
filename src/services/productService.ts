@@ -68,3 +68,11 @@ export const updateProduct = async (id: number, data: ProductRequest): Promise<P
 export const deleteProduct = async (id: number): Promise<void> => {
     await apiClient.delete(`/products/${id}`);
 }
+
+// Sản phẩm sắp hết
+export const getLowStockProducts = async (threshold = 5): Promise<Product[]> => {
+    const response = await apiClient.get('/products/low-stock', {
+        params: { threshold }
+    });
+    return response.data;
+}

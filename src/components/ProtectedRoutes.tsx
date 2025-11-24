@@ -10,7 +10,7 @@ const ProtectedRoutes = () => {
     if (authStore.status === 'idle') {
         // Hiển thị loading trong khi store kiểm tra (rất nhanh)
         return (
-            <div className="tw-flex tw-items-center tw-justify-center tw-h-screen">
+            <div className="flex items-center justify-center h-screen">
                 <Spin size="large" />
             </div>
         );

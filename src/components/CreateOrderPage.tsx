@@ -93,7 +93,7 @@ const CreateOrderPage = observer(() => {
 
             {/* Hiển thị lỗi (ví dụ: hết hàng) */}
             {status === 'error' && (
-                <Alert message={errorMessage} type="error" showIcon closable className="tw-mb-4" />
+                <Alert message={errorMessage} type="error" showIcon closable className="mb-4" />
             )}
 
             <Row gutter={[16, 16]}>
@@ -111,10 +111,10 @@ const CreateOrderPage = observer(() => {
                                 dataSource={cartItemsArray}
                                 rowKey="productId"
                                 pagination={false}
-                                className='tw-mt-4'
+                                className='mt-4'
                                 summary={() => (
                                     <Table.Summary.Row>
-                                        <Table.Summary.Cell index={0} colSpan={3} className='tw-text-right'>
+                                        <Table.Summary.Cell index={0} colSpan={3} className='text-right'>
                                             <Text strong>Tổng cộng</Text>
                                         </Table.Summary.Cell>
                                         <Table.Summary.Cell index={3}>
@@ -132,32 +132,32 @@ const CreateOrderPage = observer(() => {
                 {/* CỘT BÊN PHẢI (Tóm tắt & Hoàn tất) */}
                 <Col xs={24} lg={9}>
                     <Card title="3. Hoàn tất">
-                        <div className='tw-mb-4'>
+                        <div className='mb-4'>
                             <Text strong>Khách hàng:</Text>
                             <Text> {orderCreationStore.selectedCustomer?.fullName || 'Chưa chọn'}</Text>
                         </div>
-                        <div className='tw-mb-4'>
+                        <div className='mb-4'>
                             <Text strong>SĐT:</Text>
                             <Text> {orderCreationStore.selectedCustomer?.phoneNumber || ''}</Text>
                         </div>
 
-                        <hr className='tw-my-4' />
+                        <hr className='my-4' />
 
-                        <div className='tw-flex tw-justify-between tw-mb-2'>
+                        <div className='flex justify-between mb-2'>
                             <Text>Tổng tiền hàng: </Text>
                             <Text strong>{totalCartAmount.toLocaleString('vi-VN')} VNĐ</Text>
                         </div>
 
                         {/* (Thêm ô giảm giá ở đây nếu cần) */}
 
-                        <div className='tw-flex tw-justify-between tw-mt-4'>
+                        <div className='flex justify-between mt-4'>
                             <Title level={4}>Khách phải trả</Title>
                             <Title level={4} type="danger">{totalCartAmount.toLocaleString('vi-VN')} VNĐ</Title>
                         </div>
 
                         <Button
                             type="primary"
-                            className='tw-w-full tw-mt-4'
+                            className='w-full mt-4'
                             onClick={handleSubmit}
                             loading={status === 'pending'}
                         >
@@ -166,7 +166,7 @@ const CreateOrderPage = observer(() => {
 
                         <Button
                             danger
-                            className='tw-w-full tw-mt-2'
+                            className='w-full mt-2'
                             onClick={() => orderCreationStore.clearCart()}
                         >
                             Hủy đơn

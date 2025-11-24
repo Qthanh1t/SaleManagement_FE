@@ -96,7 +96,7 @@ const OrderListPage = () => {
 
     return (
         <div>
-            <Title level={3} className="tw-mb-4">Danh sách Đơn hàng</Title>
+            <Title level={3} className="mb-4">Danh sách Đơn hàng</Title>
 
             <Table
                 columns={columns}

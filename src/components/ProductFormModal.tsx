@@ -132,7 +132,7 @@ const ProductFormModal = ({ onSuccess, product }: ProductFormModalProps) => {
             confirmLoading={loading}
             width={600}
         >
-            <Form form={form} layout="vertical" name="product_form" className='tw-mt-6'>
+            <Form form={form} layout="vertical" name="product_form" className='mt-6'>
                 <Form.Item
                     name="sku"
                     label="SKU (Mã sản phẩm)"
