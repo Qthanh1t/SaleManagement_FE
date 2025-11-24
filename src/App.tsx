@@ -11,6 +11,9 @@ import CategoryListPage from "./pages/CategoryListPage.tsx";
 import CustomerListPage from "./pages/CustomerListPage";
 import OrderListPage from "./pages/OrderListPage.tsx";
 import OrderDetailPage from "./pages/OrderDetailPage.tsx";
+import SupplierListPage from './pages/SupplierListPage';
+import CreateReceiptPage from "./pages/Warehouse/CreateReceiptPage.tsx";
+import AdjustmentPage from "./pages/Warehouse/AdjustmentPage.tsx";
 
 function App() {
     return (
@@ -31,6 +34,9 @@ function App() {
                             <Route path="/orders/list" element={<OrderListPage />} />
                             <Route path="/orders/:id" element={<OrderDetailPage />} />
                             <Route path="/customers" element={<CustomerListPage />} />
+                            <Route path="/suppliers" element={<SupplierListPage />} />
+                            <Route path="/warehouse/receipts/new" element={<CreateReceiptPage />} />
+                            <Route path="/warehouse/adjustments" element={<AdjustmentPage />} />
                         </Route>
                     </Route>
 

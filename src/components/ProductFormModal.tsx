@@ -1,9 +1,12 @@
-import { Modal, Form, Input, InputNumber, Select, message } from 'antd';
+import {Modal, Form, Input, InputNumber, Select, message, Upload, Button} from 'antd';
 import { useStores } from '../stores/RootStore';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
 import {type Category, getCategories } from '../services/categoryService';
 import {type ProductRequest, createProduct, updateProduct, type Product } from '../services/productService';
+import type { UploadChangeParam } from 'antd/es/upload';
+import type { UploadFile } from 'antd/es/upload/interface';
+import { UploadOutlined } from '@ant-design/icons';
 
 interface ProductFormModalProps {
     // Hàm này được gọi để load lại data ở trang chính
@@ -18,8 +21,14 @@ const ProductFormModal = ({ onSuccess, product }: ProductFormModalProps) => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
 
     const isEditing = !!product;
+
+    const token = localStorage.getItem('token');
+    const uploadHeaders = {
+        Authorization: `Bearer ${token}`,
+    };
 
     // Lấy danh sách category khi modal mở
     useEffect(() => {
@@ -35,10 +44,22 @@ const ProductFormModal = ({ onSuccess, product }: ProductFormModalProps) => {
                 ...product,
                 initialStock: product.stockQuantity // Map tên field
             });
+            if (product.imageUrl) {
+                setFileList([
+                    {
+                        uid: '-1',
+                        name: product.imageUrl.split('/').pop() || 'image.png',
+                        status: 'done',
+                        url: `http://localhost:8080${product.imageUrl}`, // URL đầy đủ để hiển thị
+                    },
+                ]);
+            } else {
+                setFileList([]);
+            }
         } else {
             form.resetFields(); // Reset form nếu là tạo mới
         }
-    }, [isEditing, product, form]);
+    }, [isEditing, product, form, uiStore.isProductModalOpen]);
 
 
     const handleOk = async () => {
@@ -49,7 +70,8 @@ const ProductFormModal = ({ onSuccess, product }: ProductFormModalProps) => {
             const requestData: ProductRequest = {
                 ...values,
                 price: Number(values.price),
-                initialStock: Number(values.initialStock)
+                initialStock: Number(values.initialStock),
+                imageUrl: values.imageUrl
             };
 
             if (isEditing && product) {
@@ -74,6 +96,31 @@ const ProductFormModal = ({ onSuccess, product }: ProductFormModalProps) => {
     const handleCancel = () => {
         uiStore.closeProductModal();
         form.resetFields();
+        setFileList([]);
+    };
+
+    const handleUploadChange = (info: UploadChangeParam) => {
+        let newFileList = [...info.fileList];
+        newFileList = newFileList.slice(-1); // Chỉ giữ lại 1 file cuối cùng
+
+        if (info.file.status === 'done') {
+            message.success(`${info.file.name} upload thành công`);
+            // Lấy URL từ response của server (API /files/upload)
+            const serverUrl = info.file.response?.url;
+            // Set giá trị này vào form
+            form.setFieldsValue({ imageUrl: serverUrl });
+
+            // Cập nhật lại URL trong fileList để hiển thị (nếu cần)
+            newFileList[0].url = `http://localhost:8080${serverUrl}`;
+
+        } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} upload thất bại.`);
+        } else if (info.file.status === 'removed') {
+            // Nếu xóa file
+            form.setFieldsValue({ imageUrl: null });
+        }
+
+        setFileList(newFileList);
     };
 
     return (
@@ -137,6 +184,26 @@ const ProductFormModal = ({ onSuccess, product }: ProductFormModalProps) => {
                     label="Mô tả"
                 >
                     <Input.TextArea rows={3} />
+                </Form.Item>
+                <Form.Item
+                    name="imageUrl"
+                    label="Hình ảnh"
+                    // 'name' này chỉ để form lấy giá trị,
+                    // việc hiển thị file được quản lý bởi fileList
+                >
+                    <Upload
+                        action="http://localhost:8080/api/v1/files/upload" // API upload
+                        headers={uploadHeaders} // Header chứa token
+                        listType="picture"
+                        fileList={fileList} // Danh sách file (state)
+                        onChange={handleUploadChange} // Hàm xử lý
+                        beforeUpload={() => token ? true : (message.error('Vui lòng đăng nhập lại'), false)}
+                    >
+                        <Button icon={<UploadOutlined />}>Bấm để Upload</Button>
+                    </Upload>
+                </Form.Item>
+                <Form.Item name="imageUrl" hidden>
+                    <Input />
                 </Form.Item>
             </Form>
         </Modal>

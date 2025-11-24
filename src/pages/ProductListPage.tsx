@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Table, Button, Space, Input, Popconfirm, message, Typography, Tag } from 'antd';
+import { Table, Button, Space, Input, Popconfirm, message, Typography, Tag, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useStores } from '../stores/RootStore';
 import { observer } from 'mobx-react-lite';
@@ -84,6 +84,20 @@ const ProductListPage = () => {
 
     // Cột của bảng
     const columns = [
+        {
+            title: 'Ảnh',
+            dataIndex: 'imageUrl',
+            key: 'imageUrl',
+            render: (url: string) => (
+                url ?
+                    <Image
+                        width={60}
+                        src={`http://localhost:8080${url}`}
+                        preview={{ src: `http://localhost:8080${url}` }}
+                    />
+                    : <Image width={60} preview={false} /> // Ảnh placeholder
+            )
+        },
         { title: 'SKU', dataIndex: 'sku', key: 'sku' },
         { title: 'Tên sản phẩm', dataIndex: 'name', key: 'name' },
         { title: 'Danh mục', dataIndex: 'categoryName', key: 'categoryName' },
