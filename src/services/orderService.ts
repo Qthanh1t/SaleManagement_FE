@@ -48,3 +48,7 @@ export const getOrderById = async (id: number): Promise<Order> => {
     const response = await apiClient.get(`/orders/${id}`);
     return response.data;
 }
+
+export const cancelOrder = async (id: number): Promise<void> => {
+    await apiClient.post(`/orders/${id}/cancel`);
+}

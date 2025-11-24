@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Button, Card, Col, Row, Spin, Typography, message, Table, Tag } from 'antd';
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import {type Order, getOrderById, type OrderDetail } from '../services/orderService';
+import { Button, Card, Col, Row, Spin, Typography, message, Table, Tag, Popconfirm } from 'antd';
+import { ArrowLeftOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import {type Order, getOrderById, type OrderDetail, cancelOrder } from '../services/orderService';
 
 const { Title, Text } = Typography;
 
@@ -10,6 +10,7 @@ const OrderDetailPage = () => {
     const { id } = useParams<{ id: string }>();
     const [order, setOrder] = useState<Order | null>(null);
     const [loading, setLoading] = useState(true);
+    const [reload, setReload] = useState(false);
 
     useEffect(() => {
         if (id) {
@@ -23,7 +24,18 @@ const OrderDetailPage = () => {
                     setLoading(false);
                 });
         }
-    }, [id]);
+    }, [id, reload]);
+
+    const handleCancelOrder = async () => {
+        if (!order) return;
+        try {
+            await cancelOrder(order.id);
+            message.success('Đã hủy đơn hàng và hoàn kho!');
+            setReload(!reload); // Reload lại dữ liệu để thấy trạng thái mới
+        } catch (error: any) {
+            message.error(error.response?.data?.message || 'Lỗi khi hủy đơn');
+        }
+    }
 
     if (loading) {
         return <div className="tw-text-center tw-mt-10"><Spin size="large" /></div>;
@@ -54,11 +66,27 @@ const OrderDetailPage = () => {
 
     return (
         <div>
-            <Link to="/orders/list">
-                <Button icon={<ArrowLeftOutlined />} className="tw-mb-4">
-                    Quay lại danh sách
-                </Button>
-            </Link>
+            <div className="tw-flex tw-justify-between tw-mb-4">
+                <Link to="/orders/list">
+                    <Button icon={<ArrowLeftOutlined />}>Quay lại danh sách</Button>
+                </Link>
+
+                {/* 🔥 NÚT HỦY ĐƠN: Chỉ hiện khi trạng thái là COMPLETED */}
+                {order.status === 'COMPLETED' && (
+                    <Popconfirm
+                        title="Hủy đơn hàng"
+                        description="Bạn có chắc chắn muốn hủy? Hành động này sẽ hoàn trả hàng về kho."
+                        onConfirm={handleCancelOrder}
+                        okText="Đồng ý Hủy"
+                        cancelText="Không"
+                        okButtonProps={{ danger: true }}
+                    >
+                        <Button type="primary" danger icon={<CloseCircleOutlined />}>
+                            Hủy Đơn hàng
+                        </Button>
+                    </Popconfirm>
+                )}
+            </div>
 
             <Title level={3}>Chi tiết Đơn hàng #{order.id}</Title>
 
@@ -68,7 +96,12 @@ const OrderDetailPage = () => {
                     <Card title="Thông tin Đơn hàng">
                         <p><Text strong>Ngày tạo:</Text> {new Date(order.orderDate).toLocaleString('vi-VN')}</p>
                         <p><Text strong>Nhân viên:</Text> {order.userName}</p>
-                        <p><Text strong>Trạng thái:</Text> <Tag color="green">{order.status}</Tag></p>
+                        <p>
+                            <Text strong>Trạng thái: </Text>
+                            <Tag color={order.status === 'COMPLETED' ? 'green' : 'red'}>
+                                {order.status === 'COMPLETED' ? 'Hoàn thành' : 'Đã hủy'}
+                            </Tag>
+                        </p>
                         <Title level={4} className="tw-mt-4">Tổng tiền: <Text type="danger">{order.totalAmount.toLocaleString('vi-VN')} VNĐ</Text></Title>
                     </Card>
                 </Col>

@@ -65,7 +65,20 @@ const OrderListPage = () => {
             title: 'Trạng thái',
             dataIndex: 'status',
             key: 'status',
-            render: (status: string) => <Tag color="green">{status}</Tag>
+            render: (status: string) => {
+                let color = 'default';
+                let text = status;
+
+                if (status === 'COMPLETED') {
+                    color = 'success'; // Màu xanh lá
+                    text = 'Hoàn thành';
+                } else if (status === 'CANCELLED') {
+                    color = 'error'; // Màu đỏ
+                    text = 'Đã hủy';
+                }
+
+                return <Tag color={color}>{text}</Tag>;
+            }
         },
         {
             title: 'Hành động',
