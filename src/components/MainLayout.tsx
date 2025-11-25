@@ -15,6 +15,8 @@ import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
 import { getLowStockProducts, type Product } from '../services/productService';
 import { useStores } from '../stores/RootStore';
 import { observer } from 'mobx-react-lite';
+import logoSmall from '../assets/logo.png';
+import logoFull from '../assets/logo-full.png';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -133,8 +135,25 @@ const MainLayout: React.FC = () => {
     return (
         <Layout style={{ minHeight: '100vh' }}>
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-                <div className="h-16 flex items-center justify-center">
-                    <h1 className="text-white font-bold tw-text-lg text-2xl mx-3">SALES MANAGEMENT</h1>
+                <div className="h-16 flex items-center justify-center transition-all duration-300 overflow-hidden">
+                    {collapsed ? (
+                        // KHI THU GỌN: Hiện Logo nhỏ (Icon)
+                        <img
+                            src={logoSmall}
+                            alt="Small Logo"
+                            // Class Tailwind gợi ý: h-10 (40px) để nó nhỏ gọn trong container h-16
+                            className="h-10 w-auto animate-fade-in"
+                        />
+                    ) : (
+                        // KHI MỞ RỘNG: Hiện Logo đầy đủ
+                        <img
+                            src={logoFull}
+                            alt="Full Logo"
+                            // Class Tailwind gợi ý: h-12 (48px) để rõ nét hơn, w-auto để giữ tỷ lệ
+                            // mx-3 để tạo khoảng cách 2 bên lề
+                            className="h-12 w-auto mx-3 animate-fade-in"
+                        />
+                    )}
                 </div>
                 <Menu theme="dark" defaultSelectedKeys={['/']} mode="inline" items={items} />
             </Sider>

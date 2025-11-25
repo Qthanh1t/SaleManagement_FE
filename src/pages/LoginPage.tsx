@@ -1,19 +1,18 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Card, Layout, Alert } from 'antd';
+import { Button, Form, Input, Card, Alert, Typography } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { useStores } from '../stores/RootStore.tsx';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import Title from "antd/es/typography/Title";
 
-const { Content } = Layout;
+const { Title, Text } = Typography;
 
+// eslint-disable-next-line react-refresh/only-export-components
 const LoginPage = () => {
     const { authStore } = useStores();
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    // Nếu đã đăng nhập, tự động chuyển hướng
     useEffect(() => {
         if (authStore.isAuthenticated) {
             navigate('/', { replace: true });
@@ -21,7 +20,7 @@ const LoginPage = () => {
     }, [authStore.isAuthenticated, navigate]);
 
     const onFinish = async (values: any) => {
-        setErrorMessage(null); // Xóa lỗi cũ
+        setErrorMessage(null);
         try {
             await authStore.login({
                 email: values.email,
@@ -30,72 +29,77 @@ const LoginPage = () => {
             // Tự động chuyển hướng sẽ được xử lý bởi useEffect ở trên
             navigate('/');
         } catch (error) {
-            // Xử lý lỗi đăng nhập
             setErrorMessage("Sai email hoặc mật khẩu. Vui lòng thử lại.");
         }
     };
 
     return (
-        <Layout className="min-h-screen flex items-center justify-center bg-gray-100">
-            <Content>
-                <Card style={{ width: 400 }} className="shadow-lg">
-                    <div className="text-center mb-6">
-                        <Title level={2}>Hệ thống Bán hàng</Title>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-blue-800 to-blue-950 p-4">
+            <Card
+                style={{ width: 420 }}
+                className="shadow-2xl rounded-2xl border-0 backdrop-blur-md bg-white/90 overflow-hidden"
+                bodyStyle={{ padding: '40px' }}
+            >
+                <div className="text-center mb-8">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-100 text-indigo-600 mb-4 shadow-sm">
+                        <UserOutlined style={{ fontSize: '24px' }} />
                     </div>
+                    <Title level={3} style={{ marginBottom: 0, color: '#1f2937' }}>V-Quản Lý</Title>
+                    <Text type="secondary">Chào mừng bạn quay trở lại</Text>
+                </div>
 
-                    <Form
-                        name="normal_login"
-                        onFinish={onFinish}
-                        layout="vertical"
+                <Form
+                    name="normal_login"
+                    onFinish={onFinish}
+                    layout="vertical"
+                    size="large"
+                >
+                    <Form.Item
+                        name="email"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập Email!' },
+                            { type: 'email', message: 'Email không hợp lệ!' }
+                        ]}
                     >
-                        <Form.Item
-                            name="email"
-                            label="Email"
-                            rules={[
-                                { required: true, message: 'Vui lòng nhập Email!' },
-                                { type: 'email', message: 'Email không hợp lệ!' }
-                            ]}
-                        >
-                            <Input
-                                prefix={<UserOutlined />}
-                                placeholder="user@example.com"
-                            />
-                        </Form.Item>
+                        <Input
+                            prefix={<UserOutlined className="text-gray-400" />}
+                            placeholder="Email đăng nhập"
+                            className="rounded-lg"
+                        />
+                    </Form.Item>
 
-                        <Form.Item
-                            name="password"
-                            label="Mật khẩu"
-                            rules={[{ required: true, message: 'Vui lòng nhập Mật khẩu!' }]}
-                        >
-                            <Input.Password
-                                prefix={<LockOutlined />}
-                                placeholder="password"
-                            />
-                        </Form.Item>
+                    <Form.Item
+                        name="password"
+                        rules={[{ required: true, message: 'Vui lòng nhập Mật khẩu!' }]}
+                    >
+                        <Input.Password
+                            prefix={<LockOutlined className="text-gray-400" />}
+                            placeholder="Mật khẩu"
+                            className="rounded-lg"
+                        />
+                    </Form.Item>
 
-                        {/* Hiển thị lỗi */}
-                        {errorMessage && (
-                            <Form.Item>
-                                <Alert message={errorMessage} type="error" showIcon />
-                            </Form.Item>
-                        )}
-
+                    {errorMessage && (
                         <Form.Item>
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                                className="w-full"
-                                loading={authStore.status === 'pending'} // Hiển thị loading
-                            >
-                                Đăng nhập
-                            </Button>
+                            <Alert message={errorMessage} type="error" showIcon className="rounded-lg" />
                         </Form.Item>
-                    </Form>
-                </Card>
-            </Content>
-        </Layout>
+                    )}
+
+                    <Form.Item className="mb-2">
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            className="w-full h-12 rounded-lg font-semibold bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/30 border-none"
+                            loading={authStore.status === 'pending'}
+                        >
+                            ĐĂNG NHẬP
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Card>
+        </div>
     );
 };
 
-// Đừng quên observer cho các component dùng MobX
+// eslint-disable-next-line react-refresh/only-export-components
 export default observer(LoginPage);
