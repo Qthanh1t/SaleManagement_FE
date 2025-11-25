@@ -16,3 +16,8 @@ export const login = async (credentials: LoginCredentials): Promise<AuthResponse
     const response = await apiClient.post('/auth/login', credentials);
     return response.data;
 };
+
+export const getCurrentUser = async (): Promise<AuthResponse> => {
+    const response = await apiClient.get('/auth/me');
+    return response.data;
+};

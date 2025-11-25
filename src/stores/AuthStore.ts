@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { login, type LoginCredentials, type AuthResponse } from "../services/authService";
+import {login, type LoginCredentials, type AuthResponse, getCurrentUser} from "../services/authService";
 
 interface User {
     email: string;
@@ -25,31 +25,38 @@ export class AuthStore {
     }
 
     // Action: Kiểm tra auth khi tải trang
-    checkAuthOnLoad() {
+    async checkAuthOnLoad() {
         const token = localStorage.getItem("token");
-        const user = localStorage.getItem("user");
 
-        try {
-            if (token && user) {
-                // Nếu có token, đặt là 'success'
+        if (token) {
+            // Có token, nhưng chưa tin vội. Đặt trạng thái pending để UI có thể hiện loading
+            runInAction(() => {
+                this.token = token; // Tạm thời set token để Axios Interceptor có cái mà gửi đi
+                this.status = "pending";
+            });
+
+            try {
+                // Gọi API để xác thực token và lấy thông tin user mới nhất
+                const userData: AuthResponse = await getCurrentUser();
+
                 runInAction(() => {
-                    this.token = token;
-                    this.user = JSON.parse(user);
+                    this.user = {
+                        email: userData.email,
+                        fullName: userData.fullName,
+                        role: userData.role
+                    };
+                    // Cập nhật lại user vào localStorage cho đồng bộ
+                    localStorage.setItem("user", JSON.stringify(this.user));
                     this.status = "success";
                 });
-            } else {
-                // Nếu KHÔNG có token, đặt là 'error'
-                runInAction(() => {
-                    this.status = "error";
-                });
+            } catch (error) {
+                // Token hết hạn hoặc không hợp lệ -> Logout
+                console.error("Token invalid or expired", error);
+                this.logout();
             }
-        } catch (e) {
-            // Xử lý nếu data user trong localStorage bị lỗi
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            runInAction(() => {
-                this.status = "error";
-            });
+        } else {
+            // Không có token trong kho
+            this.logout();
         }
     }
 
