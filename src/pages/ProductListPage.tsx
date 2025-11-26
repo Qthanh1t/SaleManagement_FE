@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Table, Button, Space, Input, Popconfirm, message, Typography, Tag, Image } from 'antd';
+import {Table, Button, Space, Input, Popconfirm, message, Typography, Tag, Image, Select} from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useStores } from '../stores/RootStore';
 import { observer } from 'mobx-react-lite';
 import {type Product, getProducts, deleteProduct, type Page } from '../services/productService';
 import ProductFormModal from '../components/ProductFormModal';
+import {type Category, getCategories} from "../services/categoryService.ts";
 
 const { Title } = Typography;
 const { Search } = Input;
+const { Option } = Select;
 
 // eslint-disable-next-line react-refresh/only-export-components
 const ProductListPage = () => {
@@ -23,12 +25,14 @@ const ProductListPage = () => {
         total: 0,
     });
     const [searchTerm, setSearchTerm] = useState('');
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
     // Hàm load data chính
-    const fetchData = async (page = 0, size = 10, search = '') => {
+    const fetchData = async (page = 0, size = 10, search = '', catId: number | null = null) => {
         setLoading(true);
         try {
-            const data = await getProducts(page, size, search);
+            const data = await getProducts(page, size, search, catId);
             setProductsPage(data);
             setPagination(prev => ({
                 ...prev,
@@ -45,7 +49,8 @@ const ProductListPage = () => {
 
     // Load data lần đầu
     useEffect(() => {
-        fetchData(0, pagination.pageSize, searchTerm);
+        getCategories().then(setCategories);
+        fetchData(0, pagination.pageSize, searchTerm, selectedCategory);
     }, []); // Chỉ chạy 1 lần khi mount
 
     // Xử lý khi bảng thay đổi (phân trang, sort)
@@ -56,7 +61,14 @@ const ProductListPage = () => {
     // Xử lý tìm kiếm
     const handleSearch = (value: string) => {
         setSearchTerm(value);
-        fetchData(0, pagination.pageSize, value);
+        fetchData(0, pagination.pageSize, value, selectedCategory);
+    };
+
+    // Xử lý khi chọn Category
+    const handleCategoryChange = (value: number | null) => {
+        setSelectedCategory(value); // Cập nhật state UI
+        // Gọi API lọc ngay lập tức, reset về trang 1
+        fetchData(0, pagination.pageSize, searchTerm, value);
     };
 
     // Xử lý mở modal (Tạo mới)
@@ -147,13 +159,36 @@ const ProductListPage = () => {
                     Thêm mới
                 </Button>
             </div>
+            <Space className='mb-4' size="middle">
+                {/* 1. Ô tìm kiếm Text */}
+                <Search
+                    placeholder="Tìm theo Tên hoặc SKU..."
+                    onSearch={handleSearch}
+                    enterButton
+                    style={{ width: 300 }}
+                    allowClear
+                />
 
-            <Search
-                placeholder="Tìm kiếm theo Tên hoặc SKU..."
-                onSearch={handleSearch}
-                enterButton
-                className='mb-4'
-            />
+                {/* 2. 🔥 Dropdown chọn Category (Có tìm kiếm) */}
+                <Select
+                    showSearch // Cho phép gõ phím để tìm option
+                    style={{ width: 250 }}
+                    placeholder="Lọc theo Danh mục"
+                    optionFilterProp="children" // Tìm kiếm dựa trên text hiển thị (tên danh mục)
+                    onChange={handleCategoryChange}
+                    allowClear // Cho phép bấm nút X để bỏ chọn
+                    filterOption={(input, option) =>
+                        (option?.children as unknown as string).toLowerCase().includes(input.toLowerCase())
+                    }
+                >
+                    {categories.map(cat => (
+                        <Option key={cat.id} value={cat.id}>
+                            {cat.name}
+                        </Option>
+                    ))}
+                </Select>
+            </Space>
+
 
             <Table
                 columns={columns}

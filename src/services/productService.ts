@@ -35,12 +35,13 @@ export interface Page<T> {
 }
 
 // Lấy danh sách sản phẩm (có phân trang)
-export const getProducts = async (page = 0, size = 10, search = ''): Promise<Page<Product>> => {
+export const getProducts = async (page = 0, size = 10, search = '', categoryId?: number | null): Promise<Page<Product>> => {
     const response = await apiClient.get('/products', {
         params: {
             page,
             size,
-            search
+            search,
+            categoryId,
         }
     });
     return response.data;
