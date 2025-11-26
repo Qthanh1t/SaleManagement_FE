@@ -51,8 +51,12 @@ const CategoryListPage = () => {
             await deleteCategory(id);
             message.success('Xóa danh mục thành công');
             fetchData(); // Load lại
-        } catch (error) {
-            message.error('Lỗi khi xóa. (Có thể do danh mục đang được sản phẩm sử dụng)');
+        } catch (error: any) {
+            if (error.response && error.response.status === 409) {
+                message.error(error.response.data.message); // "Không thể xóa danh mục đang chứa sản phẩm"
+            } else {
+                message.error('Lỗi khi xóa danh mục');
+            }
         }
     };
 
