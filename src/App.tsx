@@ -14,6 +14,7 @@ import OrderDetailPage from "./pages/OrderDetailPage.tsx";
 import SupplierListPage from './pages/SupplierListPage';
 import CreateReceiptPage from "./pages/Warehouse/CreateReceiptPage.tsx";
 import AdjustmentPage from "./pages/Warehouse/AdjustmentPage.tsx";
+import UserListPage from "./pages/UserListPage.tsx";
 
 function App() {
     return (
@@ -37,6 +38,7 @@ function App() {
                             <Route path="/suppliers" element={<SupplierListPage />} />
                             <Route path="/warehouse/receipts/new" element={<CreateReceiptPage />} />
                             <Route path="/warehouse/adjustments" element={<AdjustmentPage />} />
+                            <Route path="/users" element={<UserListPage />} />
                         </Route>
                     </Route>
 

@@ -9,6 +9,7 @@ import {
     TeamOutlined,
     ShopOutlined,
     BellOutlined,
+    SolutionOutlined,
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme, Dropdown, Space, Avatar, type MenuProps, Badge, Popover, List } from 'antd';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
@@ -47,11 +48,12 @@ const items: MenuItem[] = [
         getItem(<Link to="/orders/list">Danh sách</Link>, '/orders/list'), // (Tạm dùng /orders/list)
     ]),
     getItem(<Link to="/customers">Khách hàng</Link>, '/customers', <UserOutlined />),
-    getItem(<Link to="/suppliers">Nhà cung cấp</Link>, '/suppliers', <TeamOutlined />),
+    getItem(<Link to="/suppliers">Nhà cung cấp</Link>, '/suppliers', <SolutionOutlined />),
     getItem('Quản lý Kho', 'warehouse', <ShopOutlined />, [
         getItem(<Link to="/warehouse/receipts/new">Nhập kho</Link>, '/warehouse/receipts/new'),
         getItem(<Link to="/warehouse/adjustments">Kiểm kho</Link>, '/warehouse/adjustments'),
     ]),
+    getItem(<Link to="/users">Nhân viên</Link>, '/users', <TeamOutlined />),
 ];
 
 
@@ -121,7 +123,8 @@ const MainLayout: React.FC = () => {
         '/customers': 'Quản lý Khách hàng',
         '/suppliers': 'Quản lý nhà cung cấp',
         '/warehouse/receipts/new': 'Nhập kho',
-        '/warehouse/adjustments': 'Kiểm kho'
+        '/warehouse/adjustments': 'Kiểm kho',
+        '/users': 'Quản lý nhân viên'
     };
 
     let pageTitle = pageTitleMap[location.pathname];
