@@ -36,9 +36,9 @@ export const createCustomer = async (data: CustomerCreateRequest): Promise<Custo
     return response.data;
 }
 
-export const getCustomers = async (page = 0, size = 10): Promise<Page<Customer>> => {
+export const getCustomers = async (search = '', page = 0, size = 10): Promise<Page<Customer>> => {
     const response = await apiClient.get('/customers', {
-        params: { page, size, sort: 'fullName' }
+        params: { search, page, size, sort: 'fullName' }
     });
     return response.data;
 }

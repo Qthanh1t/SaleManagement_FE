@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite';
 import {type Customer, getCustomers, deleteCustomer } from '../services/customerService';
 import CustomerFormModal from '../components/CustomerFormModal';
 import type {Page} from "../services/productService.ts";
+import Search from "antd/es/input/Search";
 
 const { Title } = Typography;
 
@@ -17,16 +18,17 @@ const CustomerListPage = () => {
         pageSize: 10,
         total: 0,
     });
+    const [searchTerm, setSearchTerm] = useState('');
 
     // State cho modal
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
 
     // Hàm load data chính
-    const fetchData = async (page = 0, size = 10) => {
+    const fetchData = async (search = '', page = 0, size = 10) => {
         setLoading(true);
         try {
-            const data = await getCustomers(page, size);
+            const data = await getCustomers(search, page, size);
             setCustomerPage(data);
             setPagination(prev => ({
                 ...prev,
@@ -42,11 +44,11 @@ const CustomerListPage = () => {
     };
 
     useEffect(() => {
-        fetchData(0, pagination.pageSize);
+        fetchData(searchTerm, 0, pagination.pageSize);
     }, []);
 
     const handleTableChange = (newPagination: any) => {
-        fetchData(newPagination.current - 1, newPagination.pageSize);
+        fetchData(searchTerm, newPagination.current - 1, newPagination.pageSize);
     };
 
     // Xử lý mở modal (Tạo mới)
@@ -61,12 +63,17 @@ const CustomerListPage = () => {
         setIsModalOpen(true);
     };
 
+    const handleSearch = (value: string) => {
+        setSearchTerm(value);
+        fetchData(value, 0, pagination.pageSize);
+    }
+
     // Xử lý xóa
     const handleDelete = async (id: number) => {
         try {
             await deleteCustomer(id);
             message.success('Xóa khách hàng thành công');
-            fetchData(pagination.current - 1, pagination.pageSize);
+            fetchData(searchTerm, pagination.current - 1, pagination.pageSize);
         } catch (error: any) {
             if (error.response && error.response.status === 409) {
                 message.error(error.response.data.message); // Hiển thị lỗi "Không thể xóa..."
@@ -113,6 +120,15 @@ const CustomerListPage = () => {
                     Thêm mới
                 </Button>
             </div>
+            <Space className='mb-4' size="middle">
+                <Search
+                    placeholder="Tìm theo Tên hoặc Số điện thoại"
+                    onSearch={handleSearch}
+                    enterButton
+                    style={{ width: 300 }}
+                    allowClear
+                />
+            </Space>
 
             <Table
                 columns={columns}
@@ -126,7 +142,7 @@ const CustomerListPage = () => {
             <CustomerFormModal
                 open={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                onSuccess={() => fetchData(pagination.current - 1, pagination.pageSize)}
+                onSuccess={() => fetchData(searchTerm, pagination.current - 1, pagination.pageSize)}
                 customer={editingCustomer}
             />
         </div>
