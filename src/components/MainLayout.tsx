@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
     DesktopOutlined,
     PieChartOutlined,
@@ -21,41 +21,19 @@ import logoFull from '../assets/logo-full.png';
 
 const { Header, Content, Footer, Sider } = Layout;
 
-// Định nghĩa kiểu cho Menu Item
-type MenuItem = Required<MenuProps>['items'][number];
+const ROLES = {
+    ADMIN: 'ROLE_ADMIN',
+    SALES: 'ROLE_SALES_STAFF',
+    WAREHOUSE: 'ROLE_WAREHOUSE_STAFF',
+};
 
-function getItem(
-    label: React.ReactNode,
-    key: string,
-    icon?: React.ReactNode,
-    children?: MenuItem[],
-): MenuItem {
-    return {
-        key,
-        icon,
-        children,
-        label,
-    } as MenuItem;
+interface MenuConfigItem {
+    key: string;
+    label: React.ReactNode;
+    icon?: React.ReactNode;
+    children?: MenuConfigItem[];
+    allowedRoles?: string[]; // Mảng các role được phép thấy (nếu không có = public)
 }
-
-// Menu chính
-const items: MenuItem[] = [
-    getItem(<Link to="/">Dashboard</Link>, '/', <PieChartOutlined />),
-    getItem(<Link to="/products">Sản phẩm</Link>, '/products', <AppstoreOutlined />),
-    getItem(<Link to="/categories">Danh mục</Link>, '/categories', <BookOutlined />),
-    getItem('Đơn hàng', '/orders', <DesktopOutlined />, [
-        getItem(<Link to="/orders/new">Tạo Đơn hàng</Link>, '/orders/new'),
-        getItem(<Link to="/orders/list">Danh sách</Link>, '/orders/list'), // (Tạm dùng /orders/list)
-    ]),
-    getItem(<Link to="/customers">Khách hàng</Link>, '/customers', <UserOutlined />),
-    getItem(<Link to="/suppliers">Nhà cung cấp</Link>, '/suppliers', <SolutionOutlined />),
-    getItem('Quản lý Kho', 'warehouse', <ShopOutlined />, [
-        getItem(<Link to="/warehouse/receipts/new">Nhập kho</Link>, '/warehouse/receipts/new'),
-        getItem(<Link to="/warehouse/adjustments">Kiểm kho</Link>, '/warehouse/adjustments'),
-    ]),
-    getItem(<Link to="/users">Nhân viên</Link>, '/users', <TeamOutlined />),
-];
-
 
 // eslint-disable-next-line react-refresh/only-export-components
 const MainLayout: React.FC = () => {
@@ -134,6 +112,103 @@ const MainLayout: React.FC = () => {
             pageTitle = 'Chi tiết Đơn hàng';
         }
     }
+
+    // Định nghĩa menu và gán quyền cho từng mục
+    const menuConfiguration: MenuConfigItem[] = [
+        {
+            key: '/',
+            label: <Link to="/">Dashboard</Link>,
+            icon: <PieChartOutlined />,
+            // Không gán allowedRoles => Ai cũng thấy (hoặc gán tất cả)
+        },
+        {
+            key: '/products',
+            label: <Link to="/products">Sản phẩm</Link>,
+            icon: <AppstoreOutlined />,
+            // Ai cũng cần xem sản phẩm
+        },
+        {
+            key: '/categories',
+            label: <Link to="/categories">Danh mục</Link>,
+            icon: <BookOutlined />,
+            // Ai cũng cần xem danh mục
+        },
+        {
+            key: 'orders', // Submenu
+            label: 'Đơn hàng',
+            icon: <DesktopOutlined />,
+            allowedRoles: [ROLES.ADMIN, ROLES.SALES], // Chỉ Admin và Sales
+            children: [
+                {
+                    key: '/orders/new',
+                    label: <Link to="/orders/new">Tạo Đơn hàng</Link>,
+                },
+                {
+                    key: '/orders/list',
+                    label: <Link to="/orders/list">Danh sách</Link>,
+                }
+            ]
+        },
+        {
+            key: '/customers',
+            label: <Link to="/customers">Khách hàng</Link>,
+            icon: <UserOutlined />,
+            allowedRoles: [ROLES.ADMIN, ROLES.SALES], // Chỉ Admin và Sales
+        },
+        {
+            key: '/suppliers',
+            label: <Link to="/suppliers">Nhà cung cấp</Link>,
+            icon: <SolutionOutlined />,
+            allowedRoles: [ROLES.ADMIN, ROLES.WAREHOUSE], // Admin và Kho
+        },
+        {
+            key: 'warehouse', // Submenu
+            label: 'Quản lý Kho',
+            icon: <ShopOutlined />,
+            allowedRoles: [ROLES.ADMIN, ROLES.WAREHOUSE], // Admin và Kho
+            children: [
+                {
+                    key: '/warehouse/receipts/new',
+                    label: <Link to="/warehouse/receipts/new">Nhập kho</Link>,
+                },
+                {
+                    key: '/warehouse/adjustments',
+                    label: <Link to="/warehouse/adjustments">Kiểm kho</Link>,
+                }
+            ]
+        },
+        {
+            key: '/users',
+            label: <Link to="/users">Nhân viên</Link>,
+            icon: <TeamOutlined />,
+            allowedRoles: [ROLES.ADMIN], // CHỈ ADMIN
+        },
+    ];
+
+    const filterMenuByRole = (menuItems: MenuConfigItem[], userRole: string): any[] => {
+        return menuItems
+            .filter(item => {
+                // Nếu không quy định role -> Hiển thị
+                if (!item.allowedRoles) return true;
+                // Nếu có quy định -> Check xem userRole có nằm trong danh sách không
+                return item.allowedRoles.includes(userRole);
+            })
+            .map(item => {
+                // Nếu có con, lọc tiếp con
+                if (item.children) {
+                    const filteredChildren = filterMenuByRole(item.children, userRole);
+                    // Nếu lọc xong mà không còn con nào -> Ẩn luôn cha (Optional logic)
+                    // Ở đây ta giữ cha nếu muốn, hoặc trả về object cha với children đã lọc
+                    return { ...item, children: filteredChildren };
+                }
+                return item;
+            });
+    };
+
+    const items = useMemo(() => {
+        const role = authStore.user?.role || '';
+        return filterMenuByRole(menuConfiguration, role);
+    }, [authStore.user?.role]);
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
