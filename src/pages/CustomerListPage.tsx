@@ -36,8 +36,13 @@ const CustomerListPage = () => {
                 pageSize: data.size,
                 total: data.totalElements,
             }));
-        } catch (error) {
-            message.error('Lỗi khi tải danh sách khách hàng');
+        } catch (error: any) {
+            if(error.response){
+                message.error(error.response.data.message);
+            }
+            else{
+                message.error('Lỗi khi tải danh sách khách hàng');
+            }
         } finally {
             setLoading(false);
         }
@@ -75,7 +80,7 @@ const CustomerListPage = () => {
             message.success('Xóa khách hàng thành công');
             fetchData(searchTerm, pagination.current - 1, pagination.pageSize);
         } catch (error: any) {
-            if (error.response && error.response.status === 409) {
+            if (error.response) {
                 message.error(error.response.data.message); // Hiển thị lỗi "Không thể xóa..."
             } else {
                 message.error('Lỗi khi xóa khách hàng');

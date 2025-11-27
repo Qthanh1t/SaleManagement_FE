@@ -46,7 +46,7 @@ const CustomerFormModal = ({ open, onClose, onSuccess, customer }: CustomerFormM
 
         } catch (error: any) {
             // XỬ LÝ LỖI TRÙNG SĐT TỪ BACKEND
-            if (error.response && error.response.status === 409) {
+            if (error.response) {
                 message.error(error.response.data.message); // Hiển thị lỗi "Số điện thoại ... đã tồn tại"
             } else {
                 message.error('Đã xảy ra lỗi!');

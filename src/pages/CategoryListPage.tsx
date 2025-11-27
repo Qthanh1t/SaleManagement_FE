@@ -52,7 +52,7 @@ const CategoryListPage = () => {
             message.success('Xóa danh mục thành công');
             fetchData(); // Load lại
         } catch (error: any) {
-            if (error.response && error.response.status === 409) {
+            if (error.response) {
                 message.error(error.response.data.message); // "Không thể xóa danh mục đang chứa sản phẩm"
             } else {
                 message.error('Lỗi khi xóa danh mục');

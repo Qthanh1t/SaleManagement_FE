@@ -19,8 +19,13 @@ const UserListPage = () => {
         try {
             const data = await getUsers(0, 100); // Lấy tạm 100 user
             setUserPage(data);
-        } catch (error) {
-            message.error('Không thể tải danh sách nhân viên');
+        } catch (error: any) {
+            if(error.response){
+                message.error(error.response.data.message);
+            }
+            else{
+                message.error('Không thể tải danh sách nhân viên');
+            }
         } finally {
             setLoading(false);
         }
@@ -33,7 +38,14 @@ const UserListPage = () => {
             await deleteUser(id);
             message.success('Đã xóa nhân viên');
             fetchData();
-        } catch (e) { message.error('Lỗi khi xóa'); }
+        } catch (error: any) {
+            if(error.response){
+                message.error(error.response.data.message);
+            }
+            else{
+                message.error('Lỗi khi xóa tài khoản');
+            }
+        }
     }
 
     const columns = [

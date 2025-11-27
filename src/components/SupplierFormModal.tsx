@@ -45,7 +45,7 @@ const SupplierFormModal = ({ open, onClose, onSuccess, supplier }: SupplierFormM
             handleCancel();
 
         } catch (error: any) {
-            if (error.response && error.response.status === 409) {
+            if (error.response) {
                 message.error(error.response.data.message); // Xử lý lỗi trùng (nếu có)
             } else {
                 message.error('Đã xảy ra lỗi!');

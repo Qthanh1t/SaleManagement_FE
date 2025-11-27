@@ -30,8 +30,13 @@ const OrderListPage = () => {
                 pageSize: data.size,
                 total: data.totalElements,
             }));
-        } catch (error) {
-            message.error('Lỗi khi tải danh sách đơn hàng');
+        } catch (error: any) {
+            if(error.response){
+                message.error(error.response.data.message);
+            }
+            else{
+                message.error('Lỗi khi tải danh sách đơn hàng');
+            }
         } finally {
             setLoading(false);
         }

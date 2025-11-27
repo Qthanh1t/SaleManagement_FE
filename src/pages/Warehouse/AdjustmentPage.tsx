@@ -35,8 +35,13 @@ const AdjustmentPage = () => {
             message.success("Điều chỉnh kho thành công!");
             form.resetFields();
             setSelectedProduct(null);
-        } catch (error) {
-            message.error("Lỗi!");
+        } catch (error: any) {
+            if(error.response){
+                message.error(error.response.data.message);
+            }
+            else{
+                message.error('Lỗi khi kiểm đếm kho');
+            }
         } finally {
             setLoading(false);
         }

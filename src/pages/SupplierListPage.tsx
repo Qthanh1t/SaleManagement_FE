@@ -32,8 +32,13 @@ const SupplierListPage = () => {
                 pageSize: data.size,
                 total: data.totalElements,
             }));
-        } catch (error) {
-            message.error('Lỗi khi tải danh sách nhà cung cấp');
+        } catch (error: any) {
+            if(error.response){
+                message.error(error.response.data.message);
+            }
+            else{
+                message.error('Lỗi khi tải danh sách nhà cung cấp');
+            }
         } finally {
             setLoading(false);
         }
@@ -63,7 +68,7 @@ const SupplierListPage = () => {
             message.success('Xóa nhà cung cấp thành công');
             fetchData(pagination.current - 1, pagination.pageSize);
         } catch (error: any) {
-            if (error.response && error.response.status === 409) {
+            if (error.response) {
                 message.error(error.response.data.message);
             } else {
                 message.error('Lỗi khi xóa');

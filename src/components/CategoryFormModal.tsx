@@ -43,9 +43,13 @@ const CategoryFormModal = ({ open, onClose, onSuccess, category }: CategoryFormM
             onSuccess(); // Load lại data
             handleCancel(); // Đóng modal
 
-        } catch (error) {
-            console.error(error);
-            message.error('Đã xảy ra lỗi!');
+        } catch (error: any) {
+            if(error.response){
+                message.error(error.response.data.message);
+            }
+            else{
+                message.error('Lỗi khi cập nhật danh mục');
+            }
         } finally {
             setLoading(false);
         }

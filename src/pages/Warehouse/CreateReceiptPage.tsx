@@ -83,8 +83,13 @@ const CreateReceiptPage = () => {
             });
             message.success('Nhập kho thành công!');
             navigate('/products');
-        } catch (error) {
-            message.error('Lỗi nhập kho');
+        } catch (error: any) {
+            if(error.response){
+                message.error(error.response.data.message);
+            }
+            else{
+                message.error('Lỗi khi nhập kho');
+            }
         } finally {
             setLoading(false);
         }

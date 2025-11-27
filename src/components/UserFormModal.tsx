@@ -22,7 +22,7 @@ const UserFormModal = ({ open, onClose, onSuccess }: UserFormModalProps) => {
             onSuccess();
             onClose();
         } catch (error: any) {
-            if (error.response?.status === 409) {
+            if (error.response) {
                 message.error(error.response.data.message); // Email trùng
             } else {
                 message.error('Lỗi khi tạo tài khoản');

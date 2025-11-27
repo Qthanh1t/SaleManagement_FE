@@ -35,17 +35,19 @@ apiClient.interceptors.response.use(
     },
     (error) => {
         // Nếu Backend trả về 401 (Unauthorized) hoặc 403 (Forbidden)
-        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+        if (error.response) {
+            const {status} = error.response;
 
-            // Kiểm tra xem có phải đang ở trang login không để tránh vòng lặp
-            if (window.location.pathname !== '/login') {
-                // Xóa token
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
+            // ĐĂNG XUẤT KHI LỖI 401 (Token hết hạn/không hợp lệ)
+            if (status === 401) {
+                if (window.location.pathname !== '/login') {
+                    // Xóa token
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
 
-                // Force reload hoặc chuyển hướng về login
-                // Cách đơn giản nhất để reset toàn bộ state của MobX là reload trang
-                window.location.href = '/login';
+                    // Chuyển hướng về login
+                    window.location.href = '/login';
+                }
             }
         }
         return Promise.reject(error);

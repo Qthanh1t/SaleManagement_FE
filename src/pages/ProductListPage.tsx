@@ -83,14 +83,19 @@ const ProductListPage = () => {
         uiStore.openProductModal(record.id);
     };
 
-    // XửS lý xóa
+    // Xử lý xóa
     const handleDelete = async (id: number) => {
         try {
             await deleteProduct(id);
             message.success('Xóa sản phẩm thành công');
             fetchData(pagination.current - 1, pagination.pageSize, searchTerm); // Load lại trang hiện tại
-        } catch (error) {
-            message.error('Lỗi khi xóa sản phẩm');
+        } catch (error: any) {
+            if(error.response){
+                message.error(error.response.data.message);
+            }
+            else{
+                message.error('Lỗi khi xóa sản phẩm');
+            }
         }
     };
 
