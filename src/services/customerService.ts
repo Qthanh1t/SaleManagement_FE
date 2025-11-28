@@ -7,6 +7,7 @@ export interface Customer {
     phoneNumber: string;
     email?: string;
     address?: string;
+    isActive: boolean;
 }
 
 // Dùng cho form tạo nhanh

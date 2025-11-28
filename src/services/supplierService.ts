@@ -8,6 +8,7 @@ export interface Supplier {
     email?: string;
     phoneNumber?: string;
     address?: string;
+    isActive: boolean;
 }
 
 export interface SupplierRequest {

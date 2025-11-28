@@ -23,6 +23,7 @@ export interface Product {
     categoryName: string;
     stockQuantity: number;
     imageUrl?: string;
+    isActive: boolean;
 }
 
 // Kiểu trả về từ API Spring (Pageable)

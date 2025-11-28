@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Table, Button, Popconfirm, message, Typography, Tag } from 'antd';
-import { UserAddOutlined, DeleteOutlined } from '@ant-design/icons';
-import { getUsers, deleteUser, type User } from '../services/userService.ts';
+import {UserAddOutlined, UnlockOutlined, LockOutlined} from '@ant-design/icons';
+import {getUsers, type User, toggleUserStatus} from '../services/userService.ts';
 import UserFormModal from '../components/UserFormModal';
 import { useStores } from '../stores/RootStore';
 import type {Page} from "../services/productService.ts"; // Để check không cho tự xóa mình
@@ -33,17 +33,17 @@ const UserListPage = () => {
 
     useEffect(() => { fetchData(); }, []);
 
-    const handleDelete = async (id: number) => {
+    const handleToggleStatus = async (id: number) => {
         try {
-            await deleteUser(id);
-            message.success('Đã xóa nhân viên');
+            await toggleUserStatus(id);
+            message.success('Đã thay đổi trạng thái nhân viên');
             fetchData();
         } catch (error: any) {
             if(error.response){
                 message.error(error.response.data.message);
             }
             else{
-                message.error('Lỗi khi xóa tài khoản');
+                message.error('Lỗi khi thay đổi trạng thái tài khoản');
             }
         }
     }
@@ -63,12 +63,29 @@ const UserListPage = () => {
             }
         },
         {
+            title: 'Trạng thái',
+            dataIndex: 'isActive',
+            render: (isActive: boolean) => (
+                <Tag color={isActive ? 'green' : 'red'}>
+                    {isActive ? 'Hoạt động' : 'Đã khóa'}
+                </Tag>
+            )
+        },
+        {
             title: 'Hành động',
             render: (_: any, record: User) => (
                 // Không cho phép tự xóa chính mình
                 record.email !== authStore.user?.email && (
-                    <Popconfirm title="Xóa nhân viên này?" onConfirm={() => handleDelete(record.id)}>
-                        <Button danger icon={<DeleteOutlined />} size="small">Xóa</Button>
+                    <Popconfirm
+                        title={record.isActive ? "Khóa tài khoản này?" : "Mở khóa tài khoản?"}
+                        description={record.isActive ? "Nhân viên này sẽ không thể đăng nhập." : "Nhân viên này sẽ có thể truy cập lại."}
+                        onConfirm={() => handleToggleStatus(record.id)}
+                    >
+                        {record.isActive ? (
+                            <Button danger icon={<LockOutlined />} size="small">Khóa</Button>
+                        ) : (
+                            <Button type="primary" icon={<UnlockOutlined />} size="small">Mở</Button>
+                        )}
                     </Popconfirm>
                 )
             )

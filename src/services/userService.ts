@@ -7,6 +7,7 @@ export interface User {
     email: string;
     roleName: string;
     roleId: number;
+    isActive: boolean;
 }
 
 export interface UserCreateRequest {
@@ -28,4 +29,8 @@ export const createUser = async (data: UserCreateRequest): Promise<User> => {
 
 export const deleteUser = async (id: number): Promise<void> => {
     await apiClient.delete(`/users/${id}`);
+}
+
+export const toggleUserStatus = async (id: number): Promise<void> => {
+    await apiClient.put(`/users/${id}/status`);
 }
