@@ -47,11 +47,12 @@ export const getProducts = async (page = 0, size = 10, search = '', categoryId?:
     });
     return response.data;
 }
-
-export const searchProducts = async (search: string): Promise<Product[]> => {
-    // Gọi API getProducts nhưng chỉ lấy 10 kết quả
-    const response = await getProducts(0, 10, search);
-    return response.content;
+// Chỉ lấy 10 kết quả, dùng cho trang bán hàng
+export const searchProducts = async (keyword: string): Promise<Product[]> => {
+    const response = await apiClient.get('/products/search-active', {
+        params: { keyword }
+    });
+    return response.data;
 }
 
 // Tạo sản phẩm
@@ -77,4 +78,8 @@ export const getLowStockProducts = async (threshold = 5): Promise<Product[]> => 
         params: { threshold }
     });
     return response.data;
+}
+
+export const toggleProductStatus = async (id: number): Promise<void> => {
+    await apiClient.put(`/products/${id}/status`);
 }

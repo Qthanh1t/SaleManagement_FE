@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import {Table, Button, Space, Input, Popconfirm, message, Typography, Tag, Image, Select} from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import {Table, Button, Space, Input, Popconfirm, message, Typography, Tag, Image, Select, Tooltip} from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, StopOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { useStores } from '../stores/RootStore';
 import { observer } from 'mobx-react-lite';
-import {type Product, getProducts, deleteProduct, type Page } from '../services/productService';
+import {type Product, getProducts, deleteProduct, type Page, toggleProductStatus} from '../services/productService';
 import ProductFormModal from '../components/ProductFormModal';
 import {type Category, getCategories} from "../services/categoryService.ts";
 
@@ -52,6 +52,22 @@ const ProductListPage = () => {
         getCategories().then(setCategories);
         fetchData(0, pagination.pageSize, searchTerm, selectedCategory);
     }, []); // Chỉ chạy 1 lần khi mount
+
+    const handleToggleStatus = async (id: number, currentStatus: boolean) => {
+        try {
+            await toggleProductStatus(id);
+            message.success(currentStatus ? 'Đã ngừng kinh doanh sản phẩm' : 'Đã mở bán lại sản phẩm');
+            // Reload data
+            fetchData(pagination.current - 1, pagination.pageSize, searchTerm, selectedCategory);
+        } catch (error: any) {
+            if(error.response){
+                message.error(error.response.data.message);
+            }
+            else{
+                message.error('Lỗi khi cập nhật trạng thái');
+            }
+        }
+    }
 
     // Xử lý khi bảng thay đổi (phân trang, sort)
     const handleTableChange = (newPagination: any) => {
@@ -133,11 +149,38 @@ const ProductListPage = () => {
             )
         },
         {
+            title: 'Trạng thái',
+            dataIndex: 'isActive',
+            key: 'isActive',
+            render: (isActive: boolean) => (
+                <Tag color={isActive ? 'success' : 'error'}>
+                    {isActive ? 'Đang bán' : 'Ngừng bán'}
+                </Tag>
+            )
+        },
+        {
             title: 'Hành động',
             key: 'action',
             render: (_: any, record: Product) => (
                 <Space size="middle">
                     <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>Sửa</Button>
+                    <Popconfirm
+                        title={record.isActive ? "Ngừng kinh doanh sản phẩm này?" : "Mở bán lại sản phẩm này?"}
+                        description={record.isActive ? "Sản phẩm sẽ không xuất hiện khi tạo đơn hàng." : "Sản phẩm sẽ xuất hiện trở lại."}
+                        onConfirm={() => handleToggleStatus(record.id, record.isActive)}
+                        okText="Đồng ý"
+                        cancelText="Hủy"
+                    >
+                        {record.isActive ? (
+                            <Tooltip title="Ngừng kinh doanh">
+                                <Button danger icon={<StopOutlined />} />
+                            </Tooltip>
+                        ) : (
+                            <Tooltip title="Mở bán lại">
+                                <Button type="primary" ghost icon={<CheckCircleOutlined />} />
+                            </Tooltip>
+                        )}
+                    </Popconfirm>
                     <Popconfirm
                         title="Xóa sản phẩm"
                         description="Bạn có chắc muốn xóa sản phẩm này?"
@@ -202,6 +245,7 @@ const ProductListPage = () => {
                 loading={loading}
                 pagination={pagination}
                 onChange={handleTableChange}
+                rowClassName={(record) => !record.isActive ? 'tw-bg-gray-50' : ''}
             />
 
             {/* Modal sẽ được render ở đây */}
