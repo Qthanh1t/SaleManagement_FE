@@ -6,12 +6,10 @@ import { Spin } from 'antd';
 const ProtectedRoutes = () => {
     const { authStore } = useStores();
 
-    // Trạng thái "idle" nghĩa là store chưa kịp kiểm tra localStorage
-    if (authStore.status === 'idle') {
-        // Hiển thị loading trong khi store kiểm tra (rất nhanh)
+    if (authStore.status === 'pending' || authStore.status === 'idle') {
         return (
-            <div className="flex items-center justify-center h-screen">
-                <Spin size="large" />
+            <div className="flex items-center justify-center h-screen bg-gray-50">
+                <Spin size="large" tip="Đang tải dữ liệu..." />
             </div>
         );
     }

@@ -9,9 +9,9 @@ interface User {
 
 export class AuthStore {
     // Observables (Trạng thái)
-    token: string | null = null;
+    token: string | null = localStorage.getItem("token");
     user: User | null = null;
-    status: "idle" | "pending" | "success" | "error" = "idle"; // Trạng thái tải
+    status: "idle" | "pending" | "success" | "error" = this.token ? "pending" : "idle";
 
     constructor() {
         makeAutoObservable(this);
@@ -26,15 +26,7 @@ export class AuthStore {
 
     // Action: Kiểm tra auth khi tải trang
     async checkAuthOnLoad() {
-        const token = localStorage.getItem("token");
-
-        if (token) {
-            // Có token, nhưng chưa tin vội. Đặt trạng thái pending để UI có thể hiện loading
-            runInAction(() => {
-                this.token = token; // Tạm thời set token để Axios Interceptor có cái mà gửi đi
-                this.status = "pending";
-            });
-
+        if (this.token) {
             try {
                 // Gọi API để xác thực token và lấy thông tin user mới nhất
                 const userData: AuthResponse = await getCurrentUser();
