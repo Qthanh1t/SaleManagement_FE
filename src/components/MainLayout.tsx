@@ -81,6 +81,12 @@ const MainLayout: React.FC = () => {
     // Menu cho Dropdown ở Header
     const userMenuItems: MenuProps['items'] = [
         {
+            key: 'profile',
+            icon: <UserOutlined />,
+            label: 'Hồ sơ cá nhân',
+            onClick: () => navigate('/profile'),
+        },
+        {
             key: 'logout',
             icon: <LogoutOutlined />,
             label: 'Đăng xuất',

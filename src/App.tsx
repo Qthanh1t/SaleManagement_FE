@@ -17,6 +17,7 @@ import AdjustmentPage from "./pages/Warehouse/AdjustmentPage.tsx";
 import UserListPage from "./pages/UserListPage.tsx";
 import ForbiddenPage from "./pages/ForbiddenPage.tsx";
 import RoleRoute from "./components/RoleRoute.tsx";
+import ProfilePage from "./pages/ProfilePage.tsx";
 
 const ROLES = {
     ADMIN: 'ROLE_ADMIN',
@@ -41,6 +42,7 @@ function App() {
                             <Route path="/" element={<DashboardPage />} />
                             <Route path="/products" element={<ProductListPage />} />
                             <Route path="/categories" element={<CategoryListPage />} />
+                            <Route path="/profile" element={<ProfilePage />} />
 
                             {/* --- 2. NHÓM ADMIN & SALES --- */}
                             <Route element={<RoleRoute allowedRoles={[ROLES.ADMIN, ROLES.SALES]} />}>
