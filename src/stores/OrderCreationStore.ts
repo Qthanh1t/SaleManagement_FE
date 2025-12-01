@@ -114,7 +114,7 @@ export class OrderCreationStore {
         }));
 
         try {
-            await createOrder({
+            const newOrder = await createOrder({
                 customerId: this.selectedCustomer.id,
                 items: items
             });
@@ -122,6 +122,7 @@ export class OrderCreationStore {
                 this.status = "success";
                 this.clearCart(); // Xóa giỏ hàng sau khi thành công
             });
+            return newOrder;
         } catch (error: any) {
             runInAction(() => {
                 this.status = "error";

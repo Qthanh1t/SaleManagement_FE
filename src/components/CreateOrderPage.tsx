@@ -5,6 +5,7 @@ import CustomerSearch from './CreateOrderPage/CustomerSearch';
 import ProductSearch from './CreateOrderPage/ProductSearch';
 import { DeleteOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
+import {useNavigate} from "react-router-dom";
 
 const { Title, Text } = Typography;
 
@@ -16,6 +17,7 @@ const CreateOrderPage = observer(() => {
         status,
         errorMessage,
     } = orderCreationStore;
+    const navigate = useNavigate();
 
     // Hiển thị thông báo khi tạo đơn thành công
     useEffect(() => {
@@ -39,7 +41,8 @@ const CreateOrderPage = observer(() => {
             message.warning('Vui lòng thêm sản phẩm vào giỏ');
             return;
         }
-        await orderCreationStore.submitOrder();
+        const order = await orderCreationStore.submitOrder();
+        navigate(`/orders/${order}`);
     }
 
     // Cột của bảng Giỏ hàng

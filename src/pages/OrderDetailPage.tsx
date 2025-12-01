@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button, Card, Col, Row, Spin, Typography, message, Table, Tag, Popconfirm } from 'antd';
-import { ArrowLeftOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, CloseCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import {type Order, getOrderById, type OrderDetail, cancelOrder } from '../services/orderService';
 
 const { Title, Text } = Typography;
@@ -67,9 +67,15 @@ const OrderDetailPage = () => {
     return (
         <div>
             <div className="flex justify-between mb-4">
-                <Link to="/orders/list">
-                    <Button icon={<ArrowLeftOutlined />}>Quay lại danh sách</Button>
-                </Link>
+                <div>
+                    <Link to="/orders/list">
+                        <Button icon={<ArrowLeftOutlined />}>Quay lại danh sách</Button>
+                    </Link>
+                    <Link to="/orders/new">
+                        <Button type="primary" icon={<PlusCircleOutlined />}>Tạo Đơn hàng mới</Button>
+                    </Link>
+                </div>
+
 
                 {/* 🔥 NÚT HỦY ĐƠN: Chỉ hiện khi trạng thái là COMPLETED */}
                 {order.status === 'COMPLETED' && (
